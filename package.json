@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "castv2-client": "^1.2.0",
-    "google-tts-api": "^2.0.2"
+    "google-tts-api": "^2.0.2",
+    "mqtt": "^5.14.1"
   }
 }

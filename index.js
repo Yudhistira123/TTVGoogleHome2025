@@ -1,5 +1,25 @@
+import mqtt from "mqtt";
 import googleTTS from "google-tts-api";
 import { Client, DefaultMediaReceiver } from "castv2-client";
+
+const GOOGLE_HOME_IP = "192.168.100.6"; // IP Google Home di LAN
+const MQTT_URL = "mqtt://103.27.206.14:1883"; // contoh broker publik
+
+// Connect ke MQTT broker
+const clientMqtt = mqtt.connect(MQTT_URL);
+
+// Subscribe topic
+clientMqtt.on("connect", () => {
+  console.log("Connected to MQTT broker");
+  clientMqtt.subscribe("home/tts");
+});
+
+// Saat ada pesan baru
+clientMqtt.on("message", (topic, message) => {
+  const text = message.toString();
+  console.log("Pesan masuk:", text);
+  castTTS(text);
+});
 
 function castTTS(text) {
   const url = googleTTS.getAudioUrl(text, {
@@ -8,10 +28,8 @@ function castTTS(text) {
     host: "https://translate.google.com",
   });
 
-  const host = "192.168.100.6"; // your Google Home IP
   const client = new Client();
-
-  client.connect(host, () => {
+  client.connect(GOOGLE_HOME_IP, () => {
     client.launch(DefaultMediaReceiver, (err, player) => {
       if (err) throw err;
 
@@ -23,16 +41,8 @@ function castTTS(text) {
 
       player.load(media, { autoplay: true }, (err, status) => {
         if (err) throw err;
-        console.log("TTS Playing:", status);
+        console.log("Google Home speaking:", text);
       });
     });
   });
 }
-
-//castTTS(" tabungan Faraz udah habis loh di bapak, terus gimana nih?");
-
-// castTTS(
-//   "ya Allah, sehatkanlah, lindungilah, jauhkanlah dari segala bencana dan marabahaya, serta lancarkanlah segala urusan hamba-hamba-Mu ini, aamiin"
-// );
-
-castTTS("test");
