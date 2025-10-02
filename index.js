@@ -36,5 +36,5 @@ function castTTS(text) {
 // );
 
 castTTS(
-  "Wahai paduka raja, hamba datang membawa titah suci dari negeri seberang."
+  "Wahai paduka raja, hamba datang membawa titah suci dari negeri seberang sana."
 );
